@@ -32,11 +32,15 @@ class BookingService {
 
   final int? servicePrice;
 
+
+  List<DateTime>  bookingStarts;
   ///The selected booking slot's starting time
   DateTime bookingStart;
 
   ///The selected booking slot's ending time
   DateTime bookingEnd;
+
+  List<DateTime>  bookingEnds;
 
   BookingService(
       {this.userEmail,
@@ -44,7 +48,9 @@ class BookingService {
       this.userId,
       this.userName,
       required this.bookingStart,
+       this.bookingStarts = const [],
       required this.bookingEnd,
+       this.bookingEnds = const[],
       this.serviceId,
       required this.serviceName,
       required this.serviceDuration,
@@ -56,7 +62,9 @@ class BookingService {
         userId = json['userId'] as String?,
         userName = json['userName'] as String?,
         bookingStart = DateTime.parse(json['bookingStart'] as String),
+        bookingStarts = json['bookingStarts'] ?? [].cast<DateTime>(),
         bookingEnd = DateTime.parse(json['bookingEnd'] as String),
+        bookingEnds = json['bookingEnds'] ?? [].cast<DateTime>(),
         serviceId = json['serviceId'] as String?,
         serviceName = json['serviceName'] as String,
         serviceDuration = json['serviceDuration'] as int,

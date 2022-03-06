@@ -22,9 +22,18 @@ class _BookingCalendarDemoAppState extends State<BookingCalendarDemoApp> {
     super.initState();
     // DateTime.now().startOfDay
     // DateTime.now().endOfDay
+    List<DateTime> test = [];
+    List<DateTime> test2 = [];
+    test.add(DateTime(now.year, now.month, now.day, 23, 30));
+    test2.add(DateTime(now.year, now.month, now.day, 0, 30));
+    test.add(DateTime(now.year, now.month, now.day, 23, 30).add(Duration(days: 1)));
+    test2.add(DateTime(now.year, now.month, now.day, 8, 30).add(Duration(days: 1)));
+
     mockBookingService = BookingService(
         serviceName: 'Mock Service',
         serviceDuration: 30,
+        bookingStarts: test2,
+        bookingEnds: test,
         bookingEnd: DateTime(now.year, now.month, now.day, 18, 0),
         bookingStart: DateTime(now.year, now.month, now.day, 8, 0));
   }
@@ -78,6 +87,10 @@ class _BookingCalendarDemoAppState extends State<BookingCalendarDemoApp> {
               convertStreamResultToDateTimeRanges: convertStreamResultMock,
               getBookingStream: getBookingStreamMock,
               uploadBooking: uploadBookingMock,
+              selectedSlotColor: Colors.black12,
+              availableSlotColor: Colors.white,
+              bookedSlotColor: Colors.white.withOpacity(0.3),
+              bookingButtonColor: Colors.blue,
             ),
           ),
         ));

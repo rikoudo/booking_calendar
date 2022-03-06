@@ -31,15 +31,43 @@ class BookingController extends ChangeNotifier {
   int get selectedSlot => _selectedSlot;
   bool get isUploading => _isUploading;
 
+
+  bool _setOpeningDate(DateTime dateTime){
+    try {
+      serviceOpening =
+          bookingService.bookingStarts.firstWhere((element) => element.year ==
+              dateTime.year && element.month == dateTime.month &&
+              element.day == dateTime.day);
+      base = serviceOpening!;
+      return true;
+    } catch (e){
+        print(e);
+        return false;
+    }
+  }
+
+  _setClosingDate(DateTime dateTime){
+    try {
+      serviceClosing = bookingService.bookingEnds.firstWhere((element) => element.year == dateTime.year && element.month == dateTime.month  && element.day == dateTime.day );
+  } catch (e){
+  print(e);
+  }
+  }
+
   void _generateBookingSlots() {
+    int maxServiceFit = _maxServiceFitInADay();
     allBookingSlots.clear();
     _allBookingSlots = List.generate(
-        _maxServiceFitInADay(),
+        maxServiceFit,
         (index) => base
             .add(Duration(minutes: bookingService.serviceDuration) * index));
+    _allBookingSlots.removeWhere((element) => DateTime.now().isAfter(element));
+
   }
 
   int _maxServiceFitInADay() {
+   if (!_setOpeningDate(base)) return 0;
+    _setClosingDate(base);
     ///if no serviceOpening and closing was provided we will calculate with 00:00-24:00
     int openingHours = 24;
     if (serviceOpening != null && serviceClosing != null) {

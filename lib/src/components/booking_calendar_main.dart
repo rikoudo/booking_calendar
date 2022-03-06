@@ -179,6 +179,9 @@ class _BookingCalendarMainState extends State<BookingCalendarMain> {
                                     BookingUtil.formatDateTime(controller.allBookingSlots.elementAt(index)),
                               ),
                             ),
+                            bookedSlotColor: widget.bookedSlotColor,
+                            availableSlotColor: widget.availableSlotColor,
+                            selectedSlotColor: widget.selectedSlotColor,
                           ),
                           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: widget.bookingGridCrossAxisCount ?? 3,
