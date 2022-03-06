@@ -1,3 +1,12 @@
+import 'package:booking_calendar/booking_calendar.dart';
+import 'package:flutter/material.dart';
+
+class RestTimes {
+  DateTime start;
+  DateTime end;
+  RestTimes({required this.start, required this.end});
+}
+
 class BookingService {
   ///
   /// The userId of the currently logged user
@@ -33,14 +42,17 @@ class BookingService {
   final int? servicePrice;
 
 
-  List<DateTime>  bookingStarts;
   ///The selected booking slot's starting time
   DateTime bookingStart;
 
   ///The selected booking slot's ending time
   DateTime bookingEnd;
 
-  List<DateTime>  bookingEnds;
+  List<DateTime>  bookingStarts;
+
+  List<DateTime> bookingEnds;
+
+  Map<DateTime,List<DateTimeRange>>? restTimes;
 
   BookingService(
       {this.userEmail,
@@ -51,6 +63,7 @@ class BookingService {
        this.bookingStarts = const [],
       required this.bookingEnd,
        this.bookingEnds = const[],
+       this.restTimes,
       this.serviceId,
       required this.serviceName,
       required this.serviceDuration,
@@ -65,6 +78,7 @@ class BookingService {
         bookingStarts = json['bookingStarts'] ?? [].cast<DateTime>(),
         bookingEnd = DateTime.parse(json['bookingEnd'] as String),
         bookingEnds = json['bookingEnds'] ?? [].cast<DateTime>(),
+        restTimes = json['restTimes '],
         serviceId = json['serviceId'] as String?,
         serviceName = json['serviceName'] as String,
         serviceDuration = json['serviceDuration'] as int,

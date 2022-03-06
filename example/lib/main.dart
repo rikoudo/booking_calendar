@@ -24,12 +24,17 @@ class _BookingCalendarDemoAppState extends State<BookingCalendarDemoApp> {
     // DateTime.now().endOfDay
     List<DateTime> test = [];
     List<DateTime> test2 = [];
+    List<DateTimeRange> restTimesList = [];
     test.add(DateTime(now.year, now.month, now.day, 23, 30));
     test2.add(DateTime(now.year, now.month, now.day, 0, 30));
     test.add(DateTime(now.year, now.month, now.day, 23, 30).add(Duration(days: 1)));
     test2.add(DateTime(now.year, now.month, now.day, 8, 30).add(Duration(days: 1)));
+    restTimesList.add(DateTimeRange(start:DateTime(now.year, now.month, now.day, 8, 30).add(Duration(days: 1)), end: DateTime(now.year, now.month, now.day, 15, 30).add(Duration(days: 1))));
+
+    Map<DateTime, List<DateTimeRange>> restTimes = {DateTime(now.year, now.month, now.day, 8, 30).add(Duration(days: 1)):restTimesList};
 
     mockBookingService = BookingService(
+      restTimes: restTimes,
         serviceName: 'Mock Service',
         serviceDuration: 30,
         bookingStarts: test2,

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 class BookingController extends ChangeNotifier {
   BookingService bookingService;
+
   BookingController({required this.bookingService}) {
     serviceOpening = bookingService.bookingStart;
     serviceClosing = bookingService.bookingEnd;
@@ -21,6 +22,7 @@ class BookingController extends ChangeNotifier {
   DateTime? serviceClosing;
 
   List<DateTime> _allBookingSlots = [];
+
   List<DateTime> get allBookingSlots => _allBookingSlots;
 
   List<DateTimeRange> bookedSlots = [];
@@ -29,29 +31,32 @@ class BookingController extends ChangeNotifier {
   bool _isUploading = false;
 
   int get selectedSlot => _selectedSlot;
+
   bool get isUploading => _isUploading;
 
-
-  bool _setOpeningDate(DateTime dateTime){
+  bool _setOpeningDate(DateTime dateTime) {
     try {
-      serviceOpening =
-          bookingService.bookingStarts.firstWhere((element) => element.year ==
-              dateTime.year && element.month == dateTime.month &&
-              element.day == dateTime.day);
+      serviceOpening = bookingService.bookingStarts.firstWhere((element) =>
+          element.year == dateTime.year &&
+          element.month == dateTime.month &&
+          element.day == dateTime.day);
       base = serviceOpening!;
       return true;
-    } catch (e){
-        print(e);
-        return false;
+    } catch (e) {
+      print(e);
+      return false;
     }
   }
 
-  _setClosingDate(DateTime dateTime){
+  _setClosingDate(DateTime dateTime) {
     try {
-      serviceClosing = bookingService.bookingEnds.firstWhere((element) => element.year == dateTime.year && element.month == dateTime.month  && element.day == dateTime.day );
-  } catch (e){
-  print(e);
-  }
+      serviceClosing = bookingService.bookingEnds.firstWhere((element) =>
+          element.year == dateTime.year &&
+          element.month == dateTime.month &&
+          element.day == dateTime.day);
+    } catch (e) {
+      print(e);
+    }
   }
 
   void _generateBookingSlots() {
@@ -62,12 +67,25 @@ class BookingController extends ChangeNotifier {
         (index) => base
             .add(Duration(minutes: bookingService.serviceDuration) * index));
     _allBookingSlots.removeWhere((element) => DateTime.now().isAfter(element));
-
+    if (bookingService.restTimes!.isNotEmpty) {
+      bookingService.restTimes!.entries.forEach((element) {
+        if (element.key.year == base.year &&
+            element.key.month == base.month &&
+            element.key.day == base.day) {
+          element.value.forEach((dateRange) {
+            _allBookingSlots.removeWhere((dateTime) =>
+                dateTime.isAfterOrEq(dateRange.start) &&
+                dateTime.isBeforeOrEq(dateRange.end));
+          });
+        }
+      });
+    }
   }
 
   int _maxServiceFitInADay() {
-   if (!_setOpeningDate(base)) return 0;
+    if (!_setOpeningDate(base)) return 0;
     _setClosingDate(base);
+
     ///if no serviceOpening and closing was provided we will calculate with 00:00-24:00
     int openingHours = 24;
     if (serviceOpening != null && serviceClosing != null) {
